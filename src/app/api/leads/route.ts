@@ -7,7 +7,7 @@ export async function POST(req: Request) {
 
     const supabase = await createClient()
 
-    const payload = {
+    const payload: any = {
       full_name: body.name || '',
       email: body.contact || '',
       company_name: body.company || null,
@@ -17,7 +17,7 @@ export async function POST(req: Request) {
 
     const { data, error } = await supabase
       .from('leads')
-      .insert(payload as any) // 🔥 ключевой фикс
+      .insert([payload]) // ❗ ВАЖНО: массив
       .select()
       .single()
 
