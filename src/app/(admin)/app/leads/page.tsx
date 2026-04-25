@@ -15,8 +15,8 @@ export default async function LeadsPage() {
     console.error('Error fetching leads:', error)
   }
 
-  // 🔥 ключевая строка — фикс TypeScript
-  const leads = data as any[]
+  // ✅ ЖЁСТКИЙ фикс — всегда массив
+  const leads = (data ?? []) as any[]
 
   return (
     <div className="space-y-6">
@@ -37,14 +37,14 @@ export default async function LeadsPage() {
           </thead>
 
           <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
-            {!leads?.length ? (
+            {leads.length === 0 ? (
               <tr>
                 <td colSpan={5} className="px-4 py-8 text-center text-slate-500">
                   No leads found.
                 </td>
               </tr>
             ) : (
-              leads.map((lead) => (
+              leads.map((lead: any) => (
                 <tr
                   key={lead.id}
                   className="hover:bg-slate-50 dark:hover:bg-slate-800/50"
