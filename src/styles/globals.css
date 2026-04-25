@@ -1,9 +1,7 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 :root {
-  --font-inter: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-inter: ui-sans-serif, system-ui, sans-serif;
 
   --color-primary-500: #22c55e;
 
