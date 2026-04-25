@@ -1,33 +1,79 @@
+import Link from "next/link"
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
 import { Button } from "@/components/ui/button"
+import { HeroVisual } from "@/components/marketing/hero-visual"
 
-export function Hero({ title, subtitle }: any) {
+type Props = {
+  title: string
+  subtitle: string
+  description: string
+  note: string
+  ctaPrimary: string
+  ctaSecondary: string
+
+  heroVisual: {
+    items: {
+      title: string
+      image: string
+    }[]
+  }
+}
+
+export function Hero({
+  title,
+  subtitle,
+  description,
+  note,
+  ctaPrimary,
+  ctaSecondary,
+  heroVisual,
+}: Props) {
   return (
     <Section>
       <Container>
-        <div className="grid md:grid-cols-2 gap-10 items-center">
 
-          {/* TEXT */}
-          <div className="space-y-6">
-            <h1 className="text-4xl md:text-5xl font-semibold leading-tight">
+        <div className="grid md:grid-cols-2 gap-12 items-center">
+
+          {/* LEFT */}
+          <div className="max-w-xl">
+
+            <h1 className="sr-only">{title}</h1>
+
+            <h2 className="text-4xl md:text-5xl font-semibold leading-tight">
               {title}
-            </h1>
+            </h2>
 
-            <p className="text-black/70 max-w-md">
+            <p className="mt-6 text-lg text-black/80">
               {subtitle}
             </p>
 
-            <div className="flex gap-4">
-              <Button>Get a website</Button>
-              <Button>See examples</Button>
+            <div className="mt-6 space-y-1 text-black/60">
+              <p>{description}</p>
+              <p>{note}</p>
             </div>
+
+            <div className="mt-8 flex gap-4">
+              <Link href="#levels">
+                <Button>{ctaPrimary}</Button>
+              </Link>
+
+              <Link href="#examples">
+                <Button variant="secondary">
+                  {ctaSecondary}
+                </Button>
+              </Link>
+            </div>
+
           </div>
 
-          {/* VISUAL */}
-          <div className="h-[300px] bg-gray-100 rounded-2xl" />
+          {/* RIGHT */}
+          <div className="flex justify-center">
+            <HeroVisual items={heroVisual.items} />
+          </div>
 
         </div>
+
       </Container>
     </Section>
   )

@@ -7,7 +7,12 @@ export type Landing = {
         ctaPrimary: string
         ctaSecondary: string
     }
-
+    heroVisual: {
+        items: {
+            title: string
+            image: string
+        }[]
+    }
     reality: {
         title: string
         items: string[]
@@ -86,14 +91,30 @@ export type Landing = {
 
 export const landing_en: Landing = {
     hero: {
-        title: "Ready Set Go",
-        subtitle: "Websites that bring clients",
-        description: "For small and medium businesses",
-        note: "Clear structure. Real results. Edit without a developer.",
+        title: "Launch a working website in 2–4 weeks",
+        subtitle: "Clear structure. Real results.",
+        description: "Clients understand your offer.",
+        note: "You control the website after launch.",
         ctaPrimary: "Get a website",
         ctaSecondary: "See examples",
     },
 
+    heroVisual: {
+        items: [
+            {
+                title: "Apartment renovation (Warsaw)",
+                image: "/images/renovation-pl.png",
+            },
+            {
+                title: "Beauty salon",
+                image: "/images/beauty-en.png",
+            },
+            {
+                title: "Houses for vacation",
+                image: "/images/houses-ru.png",
+            },
+        ],
+    },
     reality: {
         title: "Websites don't fail because of poor design",
         items: [

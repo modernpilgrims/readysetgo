@@ -1,3 +1,4 @@
+import { Header } from "@/components/marketing/header"
 import { getLanding } from "@/content/landing"
 
 import { Hero } from "@/components/marketing/hero"
@@ -10,44 +11,33 @@ import { Examples } from "@/components/marketing/examples"
 import { Facts } from "@/components/marketing/facts"
 import { Final } from "@/components/marketing/final"
 
-export default function Page({
-    params,
-}: {
-    params: { locale: string }
-}) {
-    const landing = getLanding(params.locale)
+export default async function Page({ params }: any) {
+    const { locale } = params
+    const landing = getLanding(locale)
 
     return (
-        <main className="min-h-screen">
-            <div className="max-w-6xl mx-auto px-6">
+        <>
+            <Header locale={locale} />
 
-                <Hero {...landing.hero} />
-                <div className="border-b border-white/10" />
+            <main className="pt-16">
+                <div className="max-w-6xl mx-auto px-6">
 
-                <Reality {...landing.reality} />
-                <div className="border-b border-white/10" />
+                    <Hero
+                        {...landing.hero}
+                        heroVisual={landing.heroVisual}
+                    />
 
-                <Logic {...landing.logic} />
-                <div className="border-b border-white/10" />
+                    <Reality {...landing.reality} />
+                    <Logic {...landing.logic} />
+                    <Process {...landing.process} />
+                    <Levels {...landing.levels} />
+                    <Amplifiers {...landing.amplifiers} />
+                    <Examples {...landing.examples} />
+                    <Facts {...landing.facts} />
+                    <Final {...landing.final} />
 
-                <Process {...landing.process} />
-                <div className="border-b border-white/10" />
-
-                <Levels {...landing.levels} />
-                <div className="border-b border-white/10" />
-
-                <Amplifiers {...landing.amplifiers} />
-                <div className="border-b border-white/10" />
-
-                <Examples {...landing.examples} />
-                <div className="border-b border-white/10" />
-
-                <Facts {...landing.facts} />
-                <div className="border-b border-white/10" />
-
-                <Final {...landing.final} />
-
-            </div>
-        </main>
+                </div>
+            </main>
+        </>
     )
 }

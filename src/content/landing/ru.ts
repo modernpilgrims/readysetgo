@@ -1,14 +1,28 @@
 export const landing_ru = {
   hero: {
-    title: "Ready Set Go",
-    subtitle: "Сайты, которые приводят клиентов",
-    description: "Для малого и среднего бизнеса",
-    note:
-      "Чёткая структура. Реальные заявки. Управление без разработчика.",
+    title: "Сайты, которые приводят клиентов",
+    subtitle: "Для малого и среднего бизнеса",
+    description: "Чёткая структура. Реальные заявки. Управление без разработчика.",
+    note: "Запуск рабочей страницы в 2-4 недели.",
     ctaPrimary: "Заказать сайт",
     ctaSecondary: "Смотреть примеры",
   },
-
+  heroVisual: {
+    items: [
+      {
+        title: "Ремонт квартир (Варшава)",
+        image: "/images/renovation-pl.png",
+      },
+      {
+        title: "Салон красоты",
+        image: "/images/beauty-en.png",
+      },
+      {
+        title: "Дома для отдыха",
+        image: "/images/houses-ru.png",
+      },
+    ],
+  },
   reality: {
     title: "Сайты не увеличивают поток клиентов? Дело не в дизайне.",
     items: [

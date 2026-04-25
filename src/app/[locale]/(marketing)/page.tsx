@@ -18,7 +18,10 @@ export default async function Page({ params }: any) {
       <Header locale={locale} />
 
       <main>
-        <Hero {...landing.hero} />
+        <Hero
+          {...landing.hero}
+          heroVisual={landing.heroVisual}
+        />
         <Logic {...landing.logic} />
         <Process {...landing.process} />
         <Levels {...landing.levels} />
