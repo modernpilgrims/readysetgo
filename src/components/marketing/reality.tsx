@@ -1,7 +1,7 @@
 export function Reality({ title, items, result, conclusion }: Props) {
   return (
     <section className="py-24 border-b border-white/10">
-      <div className="max-w-5xl mx-auto px-6">
+      <div className="max-w-6xl mx-auto px-6">
 
         {/* 🔥 Заголовок сильнее */}
         <h2 className="text-3xl md:text-4xl font-semibold leading-tight max-w-2xl">
@@ -13,7 +13,7 @@ export function Reality({ title, items, result, conclusion }: Props) {
           {items.map((item, i) => (
             <div
               key={i}
-              className="flex items-start gap-3 p-4 rounded-xl bg-white/[0.03] border border-white/10"
+              className="flex items-start gap-3 p-4 rounded-xl bg-white/[0.04] border border-white/10"
             >
               <div className="w-1.5 h-1.5 mt-2 rounded-full bg-white/40" />
               <p className="text-white/80">{item}</p>

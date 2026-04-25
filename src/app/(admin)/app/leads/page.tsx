@@ -4,9 +4,8 @@ import { formatDate } from '@/lib/utils/dates'
 
 export default async function LeadsPage() {
   const supabase = await createClient()
-  
-  // Note: For a real app, you'd add pagination and filtering options
-  const { data: leads, error } = await supabase
+
+  const { data, error } = await supabase
     .from('leads')
     .select('id, full_name, company_name, email, status, priority, created_at')
     .order('created_at', { ascending: false })
@@ -16,11 +15,13 @@ export default async function LeadsPage() {
     console.error('Error fetching leads:', error)
   }
 
+  // 🔥 ключевая строка — фикс TypeScript
+  const leads = data as any[]
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold tracking-tight">Leads Pipeline</h1>
-        {/* Placeholder for actions like "Export", "Add Manual" */}
       </div>
 
       <div className="rounded-md border bg-white dark:bg-slate-900 overflow-hidden">
@@ -34,6 +35,7 @@ export default async function LeadsPage() {
               <th className="px-4 py-3 text-right font-medium">Action</th>
             </tr>
           </thead>
+
           <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
             {!leads?.length ? (
               <tr>
@@ -43,7 +45,10 @@ export default async function LeadsPage() {
               </tr>
             ) : (
               leads.map((lead) => (
-                <tr key={lead.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                <tr
+                  key={lead.id}
+                  className="hover:bg-slate-50 dark:hover:bg-slate-800/50"
+                >
                   <td className="px-4 py-3 font-medium">
                     {lead.full_name}
                     {lead.company_name && (
@@ -52,17 +57,23 @@ export default async function LeadsPage() {
                       </span>
                     )}
                   </td>
-                  <td className="px-4 py-3 text-slate-500">{lead.email}</td>
+
+                  <td className="px-4 py-3 text-slate-500">
+                    {lead.email}
+                  </td>
+
                   <td className="px-4 py-3">
                     <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-slate-100 dark:bg-slate-800">
                       {lead.status}
                     </span>
                   </td>
+
                   <td className="px-4 py-3 text-slate-500">
                     {formatDate(lead.created_at)}
                   </td>
+
                   <td className="px-4 py-3 text-right">
-                    <Link 
+                    <Link
                       href={`/app/leads/${lead.id}`}
                       className="text-primary-600 hover:text-primary-700 font-medium text-xs"
                     >
