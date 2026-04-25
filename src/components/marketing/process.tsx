@@ -1,39 +1,54 @@
 import { Landing } from "@/content/landing/en"
 
+import { Section } from "@/components/layout/section"
+import { Container } from "@/components/layout/container"
+import { Heading } from "@/components/typography/heading"
+import { Text } from "@/components/typography/text"
+
 type Props = Landing["process"]
 
 export function Process({ title, steps, result }: Props) {
   return (
-    <section className="py-24 border-b border-white/10">
-      <div className="max-w-4xl mx-auto px-6">
-        <h2 className="text-2xl md:text-3xl font-semibold">
-          {title}
-        </h2>
+    <Section id="process">
+      <Container>
+        <div className="space-y-10">
 
-        <div className="mt-10 space-y-8">
-          {steps.map((step, i) => (
-            <div key={i} className="flex gap-4">
-              <div className="text-white/40 font-medium">
-                {String(i + 1).padStart(2, "0")}
+          <Heading>
+            {title}
+          </Heading>
+
+          {/* STEPS */}
+          <div className="space-y-6">
+            {steps.map((step, i) => (
+              <div key={i} className="flex gap-4 items-start">
+
+                {/* NUMBER */}
+                <div className="text-sm text-black/40 font-medium w-6">
+                  {String(i + 1).padStart(2, "0")}
+                </div>
+
+                {/* CONTENT */}
+                <div className="space-y-1">
+                  <div className="font-medium">
+                    {step.title}
+                  </div>
+
+                  <Text>
+                    {step.description}
+                  </Text>
+                </div>
+
               </div>
+            ))}
+          </div>
 
-              <div>
-                <h3 className="font-medium">
-                  {step.title}
-                </h3>
+          {/* RESULT */}
+          <div className="pt-6 border-t border-black/10 font-medium">
+            {result}
+          </div>
 
-                <p className="mt-1 text-white/60 text-sm">
-                  {step.description}
-                </p>
-              </div>
-            </div>
-          ))}
         </div>
-
-        <p className="mt-10 font-medium">
-          {result}
-        </p>
-      </div>
-    </section>
+      </Container>
+    </Section>
   )
 }

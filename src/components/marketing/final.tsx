@@ -1,35 +1,49 @@
 import { Landing } from "@/content/landing/en"
 
+import { Section } from "@/components/layout/section"
+import { Container } from "@/components/layout/container"
+import { Heading } from "@/components/typography/heading"
+import { Text } from "@/components/typography/text"
+import { Button } from "@/components/ui/button"
+
 type Props = Landing["final"]
 
 export function Final({ text, cta, secondary }: Props) {
     return (
-        <section className="py-20 border-t border-white/10">
-            <div className="max-w-4xl mx-auto px-6">
-                <h2 className="text-2xl md:text-3xl font-semibold">
-                    {text}
-                </h2>
+        <Section>
+            <Container>
 
-                <button className="mt-6 bg-white text-black px-6 py-3 rounded-xl">
-                    {cta}
-                </button>
+                <div className="max-w-xl mx-auto text-center space-y-6">
 
-                {secondary && (
-                    <div className="mt-12 pt-6 border-t border-white/10">
-                        <h3 className="text-lg font-medium">
-                            {secondary.title}
-                        </h3>
+                    <Heading>
+                        {text}
+                    </Heading>
 
-                        <p className="mt-2 text-white/60">
-                            {secondary.text}
-                        </p>
+                    <Button>
+                        {cta}
+                    </Button>
 
-                        <button className="mt-4 text-sm underline opacity-80 hover:opacity-100">
-                            {secondary.cta}
-                        </button>
-                    </div>
-                )}
-            </div>
-        </section>
+                    {secondary && (
+                        <div className="pt-10 mt-10 border-t border-black/10 space-y-3">
+
+                            <div className="text-lg font-medium">
+                                {secondary.title}
+                            </div>
+
+                            <Text>
+                                {secondary.text}
+                            </Text>
+
+                            <button className="text-sm underline opacity-70 hover:opacity-100">
+                                {secondary.cta}
+                            </button>
+
+                        </div>
+                    )}
+
+                </div>
+
+            </Container>
+        </Section>
     )
 }

@@ -1,29 +1,46 @@
 import { Landing } from "@/content/landing/en"
 
+import { Section } from "@/components/layout/section"
+import { Container } from "@/components/layout/container"
+import { Heading } from "@/components/typography/heading"
+import { Text } from "@/components/typography/text"
+
 type Props = Landing["amplifiers"]
 
 export function Amplifiers({ title, items, note, conclusion }: Props) {
     return (
-        <section className="py-20 border-b border-white/10">
-            <div className="max-w-4xl mx-auto px-6">
-                <h2 className="text-2xl md:text-3xl font-semibold">
-                    {title}
-                </h2>
+        <Section>
+            <Container>
 
-                <ul className="mt-6 space-y-2 text-white/80">
-                    {items.map((item, i) => (
-                        <li key={i}>— {item}</li>
-                    ))}
-                </ul>
+                <div className="max-w-xl space-y-8">
 
-                <p className="mt-6 text-white/60">
-                    {note}
-                </p>
+                    <Heading>
+                        {title}
+                    </Heading>
 
-                <p className="mt-2 font-medium">
-                    {conclusion}
-                </p>
-            </div>
-        </section>
+                    {/* ITEMS */}
+                    <ul className="space-y-3">
+                        {items.map((item, i) => (
+                            <li key={i} className="flex gap-3 text-black/80">
+                                <span className="opacity-40">—</span>
+                                <span>{item}</span>
+                            </li>
+                        ))}
+                    </ul>
+
+                    {/* NOTE */}
+                    <Text>
+                        {note}
+                    </Text>
+
+                    {/* CONCLUSION */}
+                    <div className="pt-4 border-t border-black/10 font-medium">
+                        {conclusion}
+                    </div>
+
+                </div>
+
+            </Container>
+        </Section>
     )
 }

@@ -1,48 +1,58 @@
 import { Landing } from "@/content/landing/en"
 
+import { Section } from "@/components/layout/section"
+import { Container } from "@/components/layout/container"
+import { Heading } from "@/components/typography/heading"
+import { Text } from "@/components/typography/text"
+import { Card } from "@/components/ui/card"
+
 type Props = Landing["examples"]
 
 export function Examples({ title, subtitle, items, more }: Props) {
     return (
-        <section className="py-20 border-b border-white/10">
-            <div className="max-w-4xl mx-auto px-6">
-                <h2 className="text-2xl md:text-3xl font-semibold">
-                    {title}
-                </h2>
+        <Section id="examples">
+            <Container>
 
-                <p className="mt-2 text-white/60">
-                    {subtitle}
-                </p>
-
-                <div className="mt-8 space-y-6">
-                    {items.map((item, i) => (
-                        <div
-                            key={i}
-                            className="border border-white/10 p-5 rounded-xl"
-                        >
-                            <h3 className="text-lg font-medium">
-                                {item.title}
-                            </h3>
-
-                            <p className="mt-2 text-sm text-white/60">
-                                {item.task}
-                            </p>
-
-                            <p className="mt-2 text-sm">
-                                {item.result}
-                            </p>
-
-                            <button className="mt-3 text-sm underline opacity-80 hover:opacity-100">
-                                {item.cta}
-                            </button>
-                        </div>
-                    ))}
+                <div className="max-w-xl space-y-4">
+                    <Heading>{title}</Heading>
+                    <Text>{subtitle}</Text>
                 </div>
 
-                <p className="mt-8 text-sm underline cursor-pointer opacity-80 hover:opacity-100">
+                {/* GRID */}
+                <div className="mt-10 grid gap-6 md:grid-cols-3">
+
+                    {items.map((item, i) => (
+                        <Card key={i}>
+                            <div className="space-y-3">
+
+                                <div className="font-medium">
+                                    {item.title}
+                                </div>
+
+                                <Text>
+                                    {item.task}
+                                </Text>
+
+                                <div className="text-sm">
+                                    {item.result}
+                                </div>
+
+                                <button className="text-sm underline opacity-70 hover:opacity-100">
+                                    {item.cta}
+                                </button>
+
+                            </div>
+                        </Card>
+                    ))}
+
+                </div>
+
+                {/* MORE */}
+                <div className="mt-8 text-sm underline opacity-70 hover:opacity-100 cursor-pointer">
                     {more}
-                </p>
-            </div>
-        </section>
+                </div>
+
+            </Container>
+        </Section>
     )
 }
