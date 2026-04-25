@@ -78,6 +78,34 @@ export type Landing = {
         conclusion: string
     }
 
+    form: {
+        title: string
+        description: string
+
+        taskLabel: string
+        taskPlaceholder: string
+
+        contactLabel: string
+        contactPlaceholder: string
+
+        note: string
+
+        submit: string
+        sending: string
+        success: string
+
+        badge: string
+
+        features: {
+            title: string
+            description: string
+        }[]
+
+        helper: string
+        trust: string
+        policy: string
+    }
+
     final: {
         text: string
         cta: string
@@ -115,6 +143,7 @@ export const landing_en: Landing = {
             },
         ],
     },
+
     reality: {
         title: "Websites don't fail because of poor design",
         items: [
@@ -185,7 +214,7 @@ export const landing_en: Landing = {
             },
         },
 
-        cta: "Get a website",
+        cta: "GO",
         note: "Final price is fixed after a 15-min task call.",
     },
 
@@ -275,6 +304,44 @@ export const landing_en: Landing = {
         ],
 
         conclusion: "Transparency before start. Control after.",
+    },
+    form: {
+        title: "Describe your task",
+        description:
+            "Tell us about your business and what you need. The more details — the better we can help.",
+
+        taskLabel: "What do you need *",
+        taskPlaceholder: "I need a website for...",
+
+        contactLabel: "How can we contact you *",
+        contactPlaceholder: "Telegram / WhatsApp / Email",
+
+        note: "We’ll use this to reply to you.",
+
+        submit: "Send request →",
+        sending: "Sending...",
+        success: "Sent. We reply within 24 hours.",
+
+        badge: "GET A WEBSITE",
+
+        features: [
+            {
+                title: "We read every request",
+                description: "No bots. Real people.",
+            },
+            {
+                title: "Your data is safe",
+                description: "We don’t share your information.",
+            },
+            {
+                title: "We reply within 24 hours",
+                description: "Usually much faster.",
+            },
+        ],
+
+        helper: "You can write or record a voice message",
+        trust: "Trusted by small and medium businesses",
+        policy: "By sending this form, you agree to our Privacy Policy.",
     },
 
     final: {

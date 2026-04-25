@@ -5,7 +5,12 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Logo } from "@/components/ui/logo"
 
-export function Header({ locale }: { locale: string }) {
+type Props = {
+    locale: string
+    onOpenForm: () => void
+}
+
+export function Header({ locale, onOpenForm }: Props) {
     const [open, setOpen] = useState(false)
 
     return (
@@ -41,7 +46,9 @@ export function Header({ locale }: { locale: string }) {
 
                     {/* Desktop CTA */}
                     <div className="hidden md:block">
-                        <Button>Start</Button>
+                        <Button onClick={onOpenForm}>
+                            Start
+                        </Button>
                     </div>
 
                     {/* Burger */}
@@ -76,7 +83,13 @@ export function Header({ locale }: { locale: string }) {
                     </nav>
 
                     <div className="pt-6">
-                        <Button className="w-full">
+                        <Button
+                            className="w-full"
+                            onClick={() => {
+                                setOpen(false)      // закрываем бургер
+                                onOpenForm()        // открываем форму
+                            }}
+                        >
                             Start
                         </Button>
                     </div>

@@ -18,6 +18,8 @@ type Props = {
       image: string
     }[]
   }
+
+  onOpenForm: () => void
 }
 
 export function Hero({
@@ -28,6 +30,7 @@ export function Hero({
   ctaPrimary,
   ctaSecondary,
   heroVisual,
+  onOpenForm,
 }: Props) {
   return (
     <Section>
@@ -54,15 +57,19 @@ export function Hero({
             </div>
 
             <div className="mt-8 flex gap-4">
-              <Link href="#levels">
-                <Button>{ctaPrimary}</Button>
-              </Link>
 
+              {/* PRIMARY → ОТКРЫВАЕТ ФОРМУ */}
+              <Button onClick={onOpenForm}>
+                {ctaPrimary}
+              </Button>
+
+              {/* SECONDARY → ЯКОРЬ НА ПРИМЕРЫ */}
               <Link href="#examples">
                 <Button variant="secondary">
                   {ctaSecondary}
                 </Button>
               </Link>
+
             </div>
 
           </div>
