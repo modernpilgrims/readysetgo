@@ -16,7 +16,7 @@ export async function POST(req: Request) {
 
     const { id, status } = body as {
       id?: string
-      status?: string
+      status?: LeadStatus
     }
 
     if (!id || !status) {
@@ -26,7 +26,7 @@ export async function POST(req: Request) {
       )
     }
 
-    if (!ALLOWED_STATUSES.includes(status as LeadStatus)) {
+    if (!ALLOWED_STATUSES.includes(status)) {
       return NextResponse.json(
         { error: "Invalid status" },
         { status: 400 }
@@ -40,22 +40,23 @@ export async function POST(req: Request) {
       updated_at: new Date().toISOString(),
     }
 
-    const { error } = await supabase
+    const { error } = await (supabase as any)
       .from("leads")
-      .update(payload as any)
+      .update(payload)
       .eq("id", id)
+
     if (error) {
       console.error("Update error:", error)
-
       return NextResponse.json(
         { error: error.message },
         { status: 500 }
       )
     }
+
     return NextResponse.json({ success: true })
+
   } catch (e) {
     console.error("API error:", e)
-
     return NextResponse.json(
       { error: "Server error" },
       { status: 500 }
