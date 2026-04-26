@@ -8,7 +8,7 @@ export async function POST(req: Request) {
         const supabase = createAdminClient()
 
         const payload = {
-            task: body.message || "no task",
+            task: body.task || body.message || "",
             contact: body.contact || "no contact",
 
             locale: body.locale || null,
