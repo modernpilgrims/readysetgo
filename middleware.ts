@@ -4,7 +4,21 @@ import type { NextRequest } from 'next/server'
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  // защита /app
+  // 👉 1. LOCALE REDIRECT (главное)
+  if (
+    pathname === '/' ||
+    (!pathname.startsWith('/en') &&
+      !pathname.startsWith('/ru') &&
+      !pathname.startsWith('/app') &&
+      !pathname.startsWith('/api') &&
+      !pathname.startsWith('/auth') &&
+      !pathname.startsWith('/_next'))
+  ) {
+    const locale = 'en' // потом сделаем авто
+    return NextResponse.redirect(new URL(`/${locale}`, request.url))
+  }
+
+  // 👉 2. защита /app (как было)
   if (pathname.startsWith('/app')) {
     const hasAuth =
       request.cookies.get('sb-access-token') ||
