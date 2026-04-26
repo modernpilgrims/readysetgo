@@ -1,3 +1,4 @@
+export const runtime = "nodejs"
 import { NextResponse } from "next/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 
@@ -8,7 +9,7 @@ export async function POST(req: Request) {
         const supabase = createAdminClient()
 
         const payload = {
-            task: body.task || body.message || "",
+            task: body.task || body.message || "no task",
             contact: body.contact || "no contact",
 
             locale: body.locale || null,
