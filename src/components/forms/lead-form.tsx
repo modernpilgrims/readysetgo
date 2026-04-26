@@ -15,22 +15,37 @@ export function LeadForm({ content }: Props) {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+
     if (!task || !contact) return
 
     setLoading(true)
 
-    const payload = {
-      task,
-      contact,
-      source: "landing",
+    try {
+      const res = await fetch("/api/leads", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          task,
+          contact,
+          locale: document.documentElement.lang || "en",
+          source: "landing",
+        }),
+      })
+
+      if (!res.ok) {
+        throw new Error("Failed to send")
+      }
+
+      setSent(true)
+      setTask("")
+      setContact("")
+    } catch (err) {
+      console.error("Submit error:", err)
+    } finally {
+      setLoading(false)
     }
-
-    console.log(payload)
-
-    setLoading(false)
-    setSent(true)
-    setTask("")
-    setContact("")
   }
 
   return (
@@ -38,10 +53,9 @@ export function LeadForm({ content }: Props) {
 
       <div className="grid md:grid-cols-2">
 
-        {/* LEFT BLOCK */}
+        {/* LEFT */}
         <div className="p-8 md:p-10 border-b md:border-b-0 md:border-r border-black/10 space-y-6">
 
-          {/* BADGE */}
           <div className="text-xs uppercase tracking-wide bg-black/5 inline-block px-3 py-1 rounded-md">
             {content.badge}
           </div>
@@ -54,7 +68,6 @@ export function LeadForm({ content }: Props) {
             {content.description}
           </p>
 
-          {/* FEATURES */}
           <div className="space-y-4 pt-4">
             {content.features.map((item, i) => (
               <div key={i} className="flex gap-3">
@@ -74,14 +87,13 @@ export function LeadForm({ content }: Props) {
             ))}
           </div>
 
-          {/* TRUST */}
           <p className="text-xs text-black/40 pt-6">
             {content.trust}
           </p>
 
         </div>
 
-        {/* RIGHT FORM */}
+        {/* RIGHT */}
         <div className="p-8 md:p-10 space-y-6">
 
           <form onSubmit={handleSubmit} className="space-y-6">
