@@ -103,7 +103,7 @@ export function LeadForm({ content, onClose }: Props) {
         formData.append("voice", audioBlob, "voice.webm")
       }
 
-      const res = await fetch("/api/leads", {
+      const res = await fetch("/api/leads/create", {
         method: "POST",
         body: formData,
       })
