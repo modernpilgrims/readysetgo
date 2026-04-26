@@ -2,16 +2,19 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
+
 import { Button } from "@/components/ui/button"
 import { Logo } from "@/components/ui/logo"
 
 type Props = {
     locale: string
-    onOpenForm: () => void
+    onOpenForm?: () => void
 }
 
 export function Header({ locale, onOpenForm }: Props) {
     const [open, setOpen] = useState(false)
+    const router = useRouter()
 
     return (
         <header className="fixed top-0 left-0 w-full z-50 bg-white border-b border-black/10">
@@ -37,7 +40,7 @@ export function Header({ locale, onOpenForm }: Props) {
                         className="text-sm bg-transparent outline-none"
                         value={locale}
                         onChange={(e) => {
-                            window.location.href = `/${e.target.value}`
+                            router.push(`/${e.target.value}`)
                         }}
                     >
                         <option value="en">EN</option>
@@ -46,7 +49,7 @@ export function Header({ locale, onOpenForm }: Props) {
 
                     {/* Desktop CTA */}
                     <div className="hidden md:block">
-                        <Button onClick={onOpenForm}>
+                        <Button onClick={() => onOpenForm?.()}>
                             Start
                         </Button>
                     </div>
@@ -86,8 +89,8 @@ export function Header({ locale, onOpenForm }: Props) {
                         <Button
                             className="w-full"
                             onClick={() => {
-                                setOpen(false)      // закрываем бургер
-                                onOpenForm()        // открываем форму
+                                setOpen(false)
+                                onOpenForm?.()
                             }}
                         >
                             Start
