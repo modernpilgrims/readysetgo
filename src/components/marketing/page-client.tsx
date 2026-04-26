@@ -12,7 +12,15 @@ import { Facts } from "@/components/marketing/facts"
 import { Final } from "@/components/marketing/final"
 import { LeadForm } from "@/components/forms/lead-form"
 
-export function PageClient({ landing, locale }: any) {
+import type { FormContent } from "@/content/form"
+
+type Props = {
+    landing: any
+    form: FormContent
+    locale: string
+}
+
+export function PageClient({ landing, form, locale }: Props) {
     const [isFormOpen, setIsFormOpen] = useState(false)
 
     useEffect(() => {
@@ -58,7 +66,11 @@ export function PageClient({ landing, locale }: any) {
                             ✕
                         </button>
 
-                        <LeadForm content={landing.form} />
+                        {/* 🔥 ВАЖНО: теперь форма отдельная */}
+                        <LeadForm
+                            content={form}
+                            onClose={() => setIsFormOpen(false)}
+                        />
                     </div>
                 </div>
             )}

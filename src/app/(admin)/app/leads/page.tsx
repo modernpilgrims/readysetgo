@@ -7,7 +7,7 @@ export default async function LeadsPage() {
 
   const { data, error } = await supabase
     .from('leads')
-    .select('id, full_name, company_name, email, status, priority, created_at')
+    .select('id, full_name, contact, task, status, quality, source, locale, created_at, updated_at')
     .order('created_at', { ascending: false })
     .limit(50)
 
@@ -59,7 +59,7 @@ export default async function LeadsPage() {
                   </td>
 
                   <td className="px-4 py-3 text-slate-500">
-                    {lead.email}
+                    {lead.contact}
                   </td>
 
                   <td className="px-4 py-3">

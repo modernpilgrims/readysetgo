@@ -6,7 +6,6 @@ export type { Landing }
 export function getLanding(locale: string): Landing {
     switch (locale) {
         case "ru":
-            // @ts-ignore - TypeScript might complain about exact matching without a cast
             return landing_ru as unknown as Landing
         default:
             return landing_en
