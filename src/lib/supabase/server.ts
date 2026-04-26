@@ -1,18 +1,9 @@
-import { createServerClient } from '@supabase/ssr'
-import { cookies } from 'next/headers'
+import { createClient } from '@supabase/supabase-js'
 
-export async function createClient() {
-  const cookieStore = await cookies()
-
-  return createServerClient(
+// 🔒 ТОЛЬКО для серверных API (leads, telegram и т.д.)
+export function createAdminClient() {
+  return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get: (name) => cookieStore.get(name)?.value,
-        set: () => { },
-        remove: () => { },
-      },
-    }
-  ) as any // 🔥 ВАЖНО
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
 }
