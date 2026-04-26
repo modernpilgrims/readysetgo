@@ -13,10 +13,19 @@ export function LeadForm({ content }: Props) {
   const [loading, setLoading] = useState(false)
   const [sent, setSent] = useState(false)
 
+  // 🔴 honeypot state
+  const [company, setCompany] = useState("")
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
 
-    if (!task || !contact) return
+    // 🔴 защита от дабл клика
+    if (loading) return
+
+    const cleanTask = task.trim()
+    const cleanContact = contact.trim()
+
+    if (!cleanTask || !cleanContact) return
 
     setLoading(true)
 
@@ -27,10 +36,13 @@ export function LeadForm({ content }: Props) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          task,
-          contact,
+          task: cleanTask,
+          contact: cleanContact,
           locale: document.documentElement.lang || "en",
           source: "landing",
+
+          // 🔴 honeypot
+          company,
         }),
       })
 
@@ -41,6 +53,7 @@ export function LeadForm({ content }: Props) {
       setSent(true)
       setTask("")
       setContact("")
+      setCompany("") // сброс honeypot
     } catch (err) {
       console.error("Submit error:", err)
     } finally {
@@ -50,7 +63,6 @@ export function LeadForm({ content }: Props) {
 
   return (
     <div className="w-full max-w-5xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
-
       <div className="grid md:grid-cols-2">
 
         {/* LEFT */}
@@ -71,7 +83,6 @@ export function LeadForm({ content }: Props) {
           <div className="space-y-4 pt-4">
             {content.features.map((item, i) => (
               <div key={i} className="flex gap-3">
-
                 <div className="w-10 h-10 rounded-lg bg-black/5 flex items-center justify-center">
                   {i === 0 && "💬"}
                   {i === 1 && "🔒"}
@@ -82,7 +93,6 @@ export function LeadForm({ content }: Props) {
                   <p className="font-medium text-sm">{item.title}</p>
                   <p className="text-xs text-black/50">{item.description}</p>
                 </div>
-
               </div>
             ))}
           </div>
@@ -97,6 +107,16 @@ export function LeadForm({ content }: Props) {
         <div className="p-8 md:p-10 space-y-6">
 
           <form onSubmit={handleSubmit} className="space-y-6">
+
+            {/* 🔴 HONEYPOT (скрытое поле) */}
+            <input
+              type="text"
+              name="company"
+              value={company}
+              onChange={(e) => setCompany(e.target.value)}
+              autoComplete="off"
+              className="hidden"
+            />
 
             {/* TASK */}
             <div>
@@ -146,7 +166,7 @@ export function LeadForm({ content }: Props) {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-black text-white py-4 rounded-xl hover:opacity-90 transition"
+              className="w-full bg-black text-white py-4 rounded-xl hover:opacity-90 transition disabled:opacity-50"
             >
               {loading ? content.sending : content.submit}
             </button>
