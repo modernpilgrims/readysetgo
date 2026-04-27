@@ -1,0 +1,240 @@
+readysetgo/
+│
+├── public/
+│   ├── icons/
+│   └── images/
+│
+├── src/
+│
+│   ├── app/                         # 👉 routing (Next.js App Router)
+│   │
+│   │   ├── (admin)/app/
+│   │   │   └── leads/
+│   │   │       └── page.tsx         # админка лидов
+│   │
+│   │   ├── [locale]/                # 👉 core multi-language layer
+│   │   │
+│   │   │   ├── (marketing)/         # лендинг
+│   │   │   │   ├── page.tsx         # главный лендинг
+│   │   │   │   └── contact/
+│   │   │   │       └── page.tsx
+│   │   │
+│   │   │   └── track/
+│   │   │       └── [id]/
+│   │   │           └── page.tsx     # страница статуса лида
+│   │
+│   │   ├── api/                     # 👉 backend слой
+│   │   │
+│   │   │   ├── leads/
+│   │   │   │   ├── route.ts         # GET / список лидов
+│   │   │   │
+│   │   │   │   ├── create/
+│   │   │   │   │   └── route.ts     # POST / создать лид
+│   │   │   │
+│   │   │   │   └── update/
+│   │   │   │       └── route.ts     # POST / обновить статус
+│   │   │
+│   │   │   ├── telegram/
+│   │   │   │   └── test/            # тест телеги
+│   │   │
+│   │   │   └── auth/
+│   │   │       └── callback/
+│   │   │           └── route.ts
+│   │
+│   │   ├── auth/
+│   │   │   ├── login/page.tsx
+│   │   │   ├── error/page.tsx
+│   │   │
+│   │   ├── layout.tsx
+│   │   ├── page.tsx                # redirect → /en
+│   │   └── globals.css
+│
+│
+│   ├── components/                # 👉 UI + marketing
+│   │
+│   │   ├── ui/                   # атомарные элементы
+│   │   │   ├── button.tsx
+│   │   │   ├── input.tsx
+│   │   │   ├── textarea.tsx
+│   │   │   └── ...
+│   │
+│   │   ├── layout/               # layout primitives
+│   │   │   ├── container.tsx
+│   │   │   ├── grid.tsx
+│   │   │   └── section.tsx
+│   │
+│   │   ├── typography/
+│   │   │   ├── heading.tsx
+│   │   │   └── text.tsx
+│   │
+│   │   ├── composites/           # мелкие блоки
+│   │   │   ├── step-item.tsx
+│   │   │   ├── level-card.tsx
+│   │   │   └── ...
+│   │
+│   │   ├── marketing/            # 👉 основные блоки лендинга
+│   │   │   ├── hero.tsx
+│   │   │   ├── hero-visual.tsx
+│   │   │   ├── reality.tsx
+│   │   │   ├── logic.tsx
+│   │   │   ├── process.tsx
+│   │   │   ├── levels.tsx
+│   │   │   ├── amplifiers.tsx
+│   │   │   ├── examples.tsx
+│   │   │   ├── facts.tsx
+│   │   │   ├── final.tsx
+│   │   │   ├── cta.tsx
+│   │   │   ├── header.tsx
+│   │   │   └── page-client.tsx   # связка UI + content
+│   │
+│   │   └── forms/
+│   │       ├── lead-form.tsx     # форма заявки
+│   │       └── login-button.tsx
+│
+│
+│   ├── content/                  # 👉 ВАЖНО: слой контента
+│   │
+│   │   ├── landing/
+│   │   │   ├── en.ts
+│   │   │   ├── ru.ts
+│   │   │   └── index.ts          # getLanding(locale)
+│   │
+│   │   ├── form/
+│   │   │   ├── en.ts
+│   │   │   ├── ru.ts
+│   │   │   ├── types.ts
+│   │   │   └── index.ts          # getForm(locale)
+│   │
+│   │   ├── track/
+│   │   │   ├── en.ts
+│   │   │   ├── ru.ts
+│   │   │   └── index.ts
+│   │
+│   │   ├── media/
+│   │   │   └── hero.ts
+│   │
+│   │   └── pricing/
+│   │       └── index.ts
+│
+│
+│   ├── lib/                      # 👉 бизнес-логика
+│   │
+│   │   ├── supabase/
+│   │   │   ├── admin.ts
+│   │   │   ├── client.ts
+│   │   │   └── server.ts
+│   │
+│   │   ├── telegram/
+│   │   │   ├── send-message.ts
+│   │   │   └── send-voice.ts
+│   │
+│   │   ├── leads/
+│   │   │   ├── lead-mappers.ts
+│   │   │   └── lead-schema.ts
+│   │
+│   │   ├── auth/
+│   │   │   ├── guards.ts
+│   │   │   └── roles.ts
+│   │
+│   │   ├── locale/
+│   │   │   └── theme.ts          # locale-theme слой
+│   │
+│   │   ├── ui/
+│   │   │   ├── cn.ts
+│   │   │   └── variants.ts
+│   │
+│   │   └── utils/
+│   │       ├── dates.ts
+│   │       └── env.ts
+│
+│
+│   ├── styles/
+│   │   ├── globals.css
+│   │   └── tokens.css
+│
+│   ├── types/
+│   │   ├── database.ts
+│   │   ├── lead.ts
+│   │   └── profile.ts
+│
+│   └── db/
+│       └── migrations/
+│           └── 0000_init.sql
+│
+│
+├── middleware.ts                 # (пока базовый)
+├── next.config.ts
+├── tailwind.config.ts
+├── tsconfig.json
+└── package.json
+
+🧠 ЧТО ВАЖНО (реальная оценка)
+✅ У ТЕБЯ УЖЕ СИЛЬНО
+✔ Чёткое разделение:
+  UI / Content / Logic
+
+✔ Multi-language через content layer
+
+✔ API слой уже есть
+
+✔ Supabase интегрирован
+
+✔ Telegram подключен
+
+✔ Track система заложена
+⚠️ ГДЕ У ТЕБЯ СЛАБО (и будет ломать дальше)
+1. Routing не до конца стандартизирован
+есть (admin)/app → странный нейминг
+нет чёткого dashboard слоя
+2. Middleware почти пустой
+
+👉 нет авто-локали
+👉 нет логики user flow
+
+3. Lead flow не замкнут
+
+Сейчас:
+
+форма → API → Supabase
+
+Должно быть:
+
+форма →
+API →
+Supabase →
+Telegram →
+redirect →
+/[locale]/track/[id]
+4. Page-client — точка перегрузки
+components/marketing/page-client.tsx
+
+👉 сейчас норм
+👉 позже станет bottleneck
+
+🚀 ТВОЙ РЕАЛЬНЫЙ СТАТУС
+Architecture: 80% готово
+Product: ~60%
+Lead system: ~50%
+📌 СЛЕДУЮЩИЙ ШАГ (без вариантов)
+
+Если делать правильно:
+
+1. Замкнуть lead flow
+после submit → redirect
+генерить track id
+2. Middleware
+авто locale
+fallback
+3. Switcher
+dropdown
+сохранение
+💬 Жёстко, но честно
+
+Ты уже прошёл самую грязную часть:
+
+сломанная архитектура → рабочая система
+
+Сейчас ты в точке:
+
+👉 где можно либо сделать продукт
+👉 либо снова всё усложнить и утонуть

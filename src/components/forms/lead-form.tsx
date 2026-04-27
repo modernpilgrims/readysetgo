@@ -1,6 +1,5 @@
 "use client"
-
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import type { FormContent } from "@/content/form"
 import { createClient } from "@/lib/supabase/client"
 import { VoiceRecorder } from "@/components/ui/voice-recorder"
@@ -22,6 +21,27 @@ export function LeadForm({ content, onClose }: Props) {
 
   const [company, setCompany] = useState("")
 
+  useEffect(() => {
+    const supabase = createClient()
+
+    async function attachUserToLead() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+
+      if (!user) return
+
+      await fetch("/api/leads/attach-user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId: user.id }),
+      })
+    }
+
+    attachUserToLead()
+  }, [])
   const MAX_LENGTH = 500
 
   async function handleGoogleLogin() {
@@ -30,7 +50,7 @@ export function LeadForm({ content, onClose }: Props) {
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: window.location.origin,
       },
     })
   }
@@ -103,7 +123,7 @@ export function LeadForm({ content, onClose }: Props) {
         formData.append("voice", audioBlob, "voice.webm")
       }
 
-      const res = await fetch("/api/leads/create", {
+      const res = await fetch("/api/leads", {
         method: "POST",
         body: formData,
       })

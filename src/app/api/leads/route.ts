@@ -1,44 +1,48 @@
+export const runtime = "nodejs"
+
 import { NextResponse } from "next/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 
-type LeadStatus = "new" | "in_progress" | "done" | "rejected"
-
-const ALLOWED_STATUSES: LeadStatus[] = [
-    "new",
-    "in_progress",
-    "done",
-    "rejected",
-]
-
 export async function POST(req: Request) {
     try {
-        const { id, status } = await req.json()
-
-        if (!id || !status) {
-            return NextResponse.json({ error: "Missing id or status" }, { status: 400 })
-        }
-
-        if (!ALLOWED_STATUSES.includes(status)) {
-            return NextResponse.json({ error: "Invalid status" }, { status: 400 })
-        }
+        const formData = await req.formData()
 
         const supabase = createAdminClient()
 
-        const { error } = await supabase
-            .from("leads")
-            .update({
-                status,
-                updated_at: new Date().toISOString(),
-            })
-            .eq("id", id)
-
-        if (error) {
-            return NextResponse.json({ error: error.message }, { status: 500 })
+        const payload = {
+            task: String(formData.get("task") || "no task"),
+            contact: String(formData.get("contact") || "no contact"),
+            locale: formData.get("locale")
+                ? String(formData.get("locale"))
+                : null,
+            source: "landing",
         }
 
-        return NextResponse.json({ success: true })
+        const { data, error } = await (supabase as any)
+            .from("leads")
+            .insert([payload])
+            .select()
+            .single()
 
-    } catch {
-        return NextResponse.json({ error: "Server error" }, { status: 500 })
+        if (error) {
+            console.error("❌ INSERT ERROR:", error)
+            return NextResponse.json(
+                { error: error.message },
+                { status: 500 }
+            )
+        }
+
+        return NextResponse.json({
+            success: true,
+            id: data?.id,
+        })
+
+    } catch (e) {
+        console.error("❌ API ERROR:", e)
+
+        return NextResponse.json(
+            { error: "Server error" },
+            { status: 500 }
+        )
     }
 }
