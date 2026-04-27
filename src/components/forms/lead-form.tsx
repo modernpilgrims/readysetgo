@@ -1,5 +1,6 @@
 "use client"
-import { useState, useEffect } from "react"
+
+import { useEffect, useState } from "react"
 import type { FormContent } from "@/content/form"
 import { createClient } from "@/lib/supabase/client"
 import { VoiceRecorder } from "@/components/ui/voice-recorder"
@@ -8,6 +9,8 @@ type Props = {
   content: FormContent
   onClose?: () => void
 }
+
+const MAX_LENGTH = 500
 
 export function LeadForm({ content, onClose }: Props) {
   const [task, setTask] = useState("")
@@ -18,10 +21,12 @@ export function LeadForm({ content, onClose }: Props) {
   const [sent, setSent] = useState(false)
   const [error, setError] = useState("")
   const [contactHint, setContactHint] = useState("")
-
   const [company, setCompany] = useState("")
+  const [attached, setAttached] = useState(false)
 
   useEffect(() => {
+    if (attached) return
+
     const supabase = createClient()
 
     async function attachUserToLead() {
@@ -31,18 +36,25 @@ export function LeadForm({ content, onClose }: Props) {
 
       if (!user) return
 
+      const leadId = localStorage.getItem("lead_id")
+      if (!leadId) return
+
       await fetch("/api/leads/attach-user", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ userId: user.id }),
+        body: JSON.stringify({
+          userId: user.id,
+          leadId,
+        }),
       })
+
+      setAttached(true)
     }
 
     attachUserToLead()
-  }, [])
-  const MAX_LENGTH = 500
+  }, [attached])
 
   async function handleGoogleLogin() {
     const supabase = createClient()
@@ -50,7 +62,7 @@ export function LeadForm({ content, onClose }: Props) {
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: window.location.origin,
+        redirectTo: `${window.location.origin}/auth/callback`,
       },
     })
   }
@@ -96,7 +108,6 @@ export function LeadForm({ content, onClose }: Props) {
     const cleanTask = task.trim()
     const cleanContact = contact.trim()
 
-    // 🔴 validation: теперь допускаем голос БЕЗ текста
     if (!cleanTask && !audioBlob) {
       setError(content.errorTask)
       return
@@ -128,7 +139,15 @@ export function LeadForm({ content, onClose }: Props) {
         body: formData,
       })
 
-      if (!res.ok) throw new Error("Failed")
+      const json = await res.json()
+
+      if (!res.ok) {
+        throw new Error(json?.error || "Failed")
+      }
+
+      if (json.id) {
+        localStorage.setItem("lead_id", json.id)
+      }
 
       setSent(true)
       setTask("")
@@ -143,7 +162,6 @@ export function LeadForm({ content, onClose }: Props) {
     }
   }
 
-  // 🟢 SUCCESS
   if (sent) {
     return (
       <div className="p-10 text-center space-y-6">
@@ -165,6 +183,7 @@ export function LeadForm({ content, onClose }: Props) {
           <a
             href={content.contacts.telegram}
             target="_blank"
+            rel="noreferrer"
             className="block w-full bg-black text-white py-3 rounded-xl"
           >
             Telegram
@@ -173,6 +192,7 @@ export function LeadForm({ content, onClose }: Props) {
           <a
             href={content.contacts.whatsapp}
             target="_blank"
+            rel="noreferrer"
             className="block w-full border border-black/10 py-3 rounded-xl"
           >
             WhatsApp
@@ -192,6 +212,7 @@ export function LeadForm({ content, onClose }: Props) {
           </p>
 
           <button
+            type="button"
             onClick={handleGoogleLogin}
             className="w-full border border-black/10 py-3 rounded-xl hover:bg-black hover:text-white transition"
           >
@@ -200,6 +221,7 @@ export function LeadForm({ content, onClose }: Props) {
         </div>
 
         <button
+          type="button"
           onClick={onClose}
           className="text-xs text-black/40 underline pt-4"
         >
@@ -212,8 +234,6 @@ export function LeadForm({ content, onClose }: Props) {
   return (
     <div className="w-full max-w-5xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
       <div className="grid md:grid-cols-2">
-
-        {/* LEFT */}
         <div className="p-8 md:p-10 border-b md:border-b-0 md:border-r border-black/10 space-y-6">
           <div className="text-xs uppercase tracking-wide bg-black/5 inline-block px-3 py-1 rounded-md">
             {content.badge}
@@ -228,26 +248,25 @@ export function LeadForm({ content, onClose }: Props) {
           </p>
         </div>
 
-        {/* RIGHT */}
         <div className="p-8 md:p-10 space-y-6">
-
           <form onSubmit={handleSubmit} className="space-y-6">
-
             <input
               type="text"
               name="company"
               value={company}
               onChange={(e) => setCompany(e.target.value)}
               className="hidden"
+              tabIndex={-1}
+              autoComplete="off"
             />
 
-            {/* TEXT */}
             <div>
               <label className="text-sm text-black/60">
                 {content.taskLabel}
               </label>
 
               <textarea
+                name="task"
                 value={task}
                 onChange={(e) => setTask(e.target.value)}
                 placeholder={content.taskPlaceholder}
@@ -256,7 +275,6 @@ export function LeadForm({ content, onClose }: Props) {
               />
             </div>
 
-            {/* 🎙 VOICE */}
             <div className="flex flex-col items-center gap-2">
               <VoiceRecorder onComplete={(blob) => setAudioBlob(blob)} />
 
@@ -267,13 +285,13 @@ export function LeadForm({ content, onClose }: Props) {
               )}
             </div>
 
-            {/* CONTACT */}
             <div>
               <label className="text-sm text-black/60">
                 {content.contactLabel}
               </label>
 
               <input
+                name="contact"
                 value={contact}
                 onChange={(e) => handleContactChange(e.target.value)}
                 placeholder={content.contactPlaceholder}
@@ -294,7 +312,7 @@ export function LeadForm({ content, onClose }: Props) {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-black text-white py-4 rounded-xl"
+              className="w-full bg-black text-white py-4 rounded-xl disabled:opacity-60"
             >
               {loading ? content.sending : content.submit}
             </button>
@@ -302,11 +320,8 @@ export function LeadForm({ content, onClose }: Props) {
             <p className="text-xs text-black/40 text-center">
               🔒 {content.policy}
             </p>
-
           </form>
-
         </div>
-
       </div>
     </div>
   )
