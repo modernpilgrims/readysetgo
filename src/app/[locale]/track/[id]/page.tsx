@@ -18,26 +18,11 @@ export default async function Page({
     const content = getTrack(locale)
     const supabase = await createServerClient()
 
-    const {
-        data: { user },
-    } = await supabase.auth.getUser()
-
-    if (!user) {
-        return (
-            <main className="min-h-screen flex items-center justify-center bg-white px-6">
-                <div className="max-w-md text-center space-y-3">
-                    <h1 className="text-2xl font-semibold">Unauthorized</h1>
-                    <p className="text-black/60">
-                        Please sign in to view your request.
-                    </p>
-                </div>
-            </main>
-        )
-    }
+    // ❌ УБРАЛИ auth
 
     const { data: lead, error } = await supabase
         .from("leads")
-        .select("id, task, contact, status, user_id, created_at, updated_at")
+        .select("id, task, status, created_at, updated_at")
         .eq("id", id)
         .single()
 
@@ -47,7 +32,7 @@ export default async function Page({
                 <div className="max-w-md text-center space-y-3">
                     <h1 className="text-2xl font-semibold">Not found</h1>
                     <p className="text-black/60">
-                        We could not find this request for your account.
+                        This request does not exist.
                     </p>
                 </div>
             </main>

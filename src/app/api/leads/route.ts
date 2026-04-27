@@ -7,6 +7,7 @@ import { sendTelegramVoice } from "@/lib/telegram/send-voice"
 
 export async function POST(req: Request) {
     try {
+        // ✅ ВАЖНО — FormData
         const formData = await req.formData()
 
         const supabase = createAdminClient()
@@ -17,14 +18,22 @@ export async function POST(req: Request) {
             ? String(formData.get("locale"))
             : null
 
+        const company = String(formData.get("company") || "").trim()
+
         const voiceEntry = formData.get("voice")
         const voice = voiceEntry instanceof File ? voiceEntry : null
+
+        // anti-spam
+        if (company) {
+            return NextResponse.json({ success: true })
+        }
 
         const payload = {
             task: task || "🎤 Voice message",
             contact: contact || "no contact",
             locale,
             source: "landing",
+            status: "new",
         }
 
         const { data, error } = await (supabase as any)
@@ -35,7 +44,6 @@ export async function POST(req: Request) {
 
         if (error) {
             console.error("❌ INSERT ERROR:", error)
-
             return NextResponse.json(
                 { error: error.message },
                 { status: 500 }
@@ -54,12 +62,6 @@ ID: ${data?.id}
 `)
 
         if (voice) {
-            console.log("🎙 TELEGRAM VOICE SEND START", {
-                name: voice.name,
-                size: voice.size,
-                type: voice.type,
-            })
-
             await sendTelegramVoice(voice)
         }
 
