@@ -2,9 +2,9 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
+  const { pathname, searchParams } = request.nextUrl
 
-  // 👉 1. LOCALE REDIRECT (главное)
+  // ✅ 1. LOCALE REDIRECT
   if (
     pathname === '/' ||
     (!pathname.startsWith('/en') &&
@@ -14,12 +14,18 @@ export function middleware(request: NextRequest) {
       !pathname.startsWith('/auth') &&
       !pathname.startsWith('/_next'))
   ) {
-    const locale = 'en' // потом сделаем авто
-    return NextResponse.redirect(new URL(`/${locale}`, request.url))
+    return NextResponse.redirect(new URL('/en', request.url))
   }
 
-  // 👉 2. защита /app (как было)
+  // ✅ 2. ПРОПУСК ПОСЛЕ GOOGLE AUTH
   if (pathname.startsWith('/app')) {
+    const fromAuth = searchParams.get('fromAuth')
+
+    // 🔥 ключевой фикс
+    if (fromAuth) {
+      return NextResponse.next()
+    }
+
     const hasAuth =
       request.cookies.get('sb-access-token') ||
       request.cookies.get('sb-refresh-token')
