@@ -1,43 +1,87 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
+import { createServerClient } from '@supabase/ssr'
+import { NextResponse, type NextRequest } from 'next/server'
 
-export function middleware(request: NextRequest) {
-  const { pathname, searchParams } = request.nextUrl
+const locales = ['en', 'ru']
 
-  // ✅ 1. LOCALE REDIRECT
-  if (
-    pathname === '/' ||
-    (!pathname.startsWith('/en') &&
-      !pathname.startsWith('/ru') &&
-      !pathname.startsWith('/app') &&
-      !pathname.startsWith('/api') &&
-      !pathname.startsWith('/auth') &&
-      !pathname.startsWith('/_next'))
-  ) {
+function copyResponseCookies(from: NextResponse, to: NextResponse) {
+  from.cookies.getAll().forEach((cookie) => {
+    to.cookies.set(cookie)
+  })
+
+  return to
+}
+
+export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl
+
+  // 1. Root redirect
+  if (pathname === '/') {
     return NextResponse.redirect(new URL('/en', request.url))
   }
 
-  // ✅ 2. ПРОПУСК ПОСЛЕ GOOGLE AUTH
-  if (pathname.startsWith('/app')) {
-    const fromAuth = searchParams.get('fromAuth')
+  // 2. Locale guard
+  const isPublicSystemRoute =
+    pathname.startsWith('/api') ||
+    pathname.startsWith('/auth') ||
+    pathname.startsWith('/_next') ||
+    pathname === '/favicon.ico'
 
-    // 🔥 ключевой фикс
-    if (fromAuth) {
-      return NextResponse.next()
-    }
+  const isAppRoute = pathname.startsWith('/app')
 
-    const hasAuth =
-      request.cookies.get('sb-access-token') ||
-      request.cookies.get('sb-refresh-token')
+  const firstSegment = pathname.split('/')[1]
+  const isLocaleRoute = locales.includes(firstSegment)
 
-    if (!hasAuth) {
-      const loginUrl = new URL('/auth/login', request.url)
-      loginUrl.searchParams.set('next', pathname)
-      return NextResponse.redirect(loginUrl)
-    }
+  if (!isPublicSystemRoute && !isAppRoute && !isLocaleRoute) {
+    return NextResponse.redirect(new URL('/en', request.url))
   }
 
-  return NextResponse.next()
+  // 3. Protect only /app
+  if (!isAppRoute) {
+    return NextResponse.next()
+  }
+
+  let supabaseResponse = NextResponse.next({
+    request,
+  })
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll()
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value }) => {
+            request.cookies.set(name, value)
+          })
+
+          supabaseResponse = NextResponse.next({
+            request,
+          })
+
+          cookiesToSet.forEach(({ name, value, options }) => {
+            supabaseResponse.cookies.set(name, value, options)
+          })
+        },
+      },
+    }
+  )
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
+    const loginUrl = new URL('/auth/login', request.url)
+    loginUrl.searchParams.set('next', pathname)
+
+    const redirectResponse = NextResponse.redirect(loginUrl)
+    return copyResponseCookies(supabaseResponse, redirectResponse)
+  }
+
+  return supabaseResponse
 }
 
 export const config = {
