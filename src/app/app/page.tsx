@@ -1,8 +1,13 @@
+import Link from 'next/link'
+
 export default function AppPage() {
     return (
-        <div style={{ padding: 40 }}>
+        <div className="p-6">
             <h1>Dashboard</h1>
-            <p>You are logged in</p>
+
+            <Link href="/app/leads">
+                Open leads
+            </Link>
         </div>
     )
 }
